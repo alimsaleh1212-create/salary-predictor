@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# uv
+.uv/
+uv.lock
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data (ignore large files but track .gitkeep)
+data/raw/*.csv
+data/raw/*.parquet
+data/processed/*.csv
+data/processed/*.parquet
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Models
+models/*.joblib
+models/*.pkl
+models/*.bin
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+temp/

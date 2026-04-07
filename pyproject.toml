@@ -1,0 +1,39 @@
+[project]
+name = "salary-prediction"
+version = "0.1.0"
+description = "Salary Prediction Application - End-to-End ML Pipeline from Data to Deployment"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.2.0",
+    "numpy>=2.0.0",
+    "scikit-learn>=1.5.0",
+    "joblib>=1.4.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.9.0",
+    "ollama>=0.4.0",
+    "supabase>=2.10.0",
+    "matplotlib>=3.9.0",
+    "seaborn>=0.13.0",
+    "plotly>=5.24.0",
+    "kaggle>=1.6.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.32.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
