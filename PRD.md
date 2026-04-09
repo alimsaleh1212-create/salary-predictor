@@ -107,6 +107,19 @@ CSV Upload (Streamlit UI)
 >    - Process records safely with progress bar.
 >    - Continue processing on individual record failures and clearly report successes/failures.
 
+### 4.3.1 Allowed Values for CSV Upload (Derived from Training Data)
+
+The uploaded CSV must use the **raw dataset format** (same structure as `ds_salaries.csv`). The preprocessing pipeline maps raw fields to model features internally.
+
+**Required columns**: `work_year`, `experience_level`, `employment_type`, `job_title`, `employee_residence`, `remote_ratio`, `company_location`, `company_size`
+
+**Validation rules enforced before any prediction call**:
+1. All required columns present (exact names, no extras required).
+2. No `NaN` or empty cells in any row — entire batch rejected if found.
+3. `experience_level`, `employment_type`, `remote_ratio`, `company_size` must be exact matches — entire batch rejected on any mismatch, with the offending rows and values listed in the error message.
+4. `employee_residence` and `company_location` must be 2-letter ISO codes from the allowed lists above — entire batch rejected on any mismatch.
+5. Minimum 50 records.
+
 ### 4.4 LLM Analysis (Local Dockerized Ollama – gemma4:e2b)
 - Use `gemma4:e2b` model.
 - Prompt must generate:
@@ -117,16 +130,4 @@ CSV Upload (Streamlit UI)
 ### 4.5 Supabase Schema
 Recommended table (`salary_predictions`):
 
-```sql
-id                  uuid primary key default uuid_generate_v4()
-work_year           int
-experience_level    text
-employment_type     text
-job_title           text
-company_size        text
-remote_ratio        int
-predicted_salary    numeric
-manager_insights    text
-employee_insights   text
-visualization_url   text
-created_at          timestamp default now()
+recommend best schema
