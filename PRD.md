@@ -50,3 +50,83 @@ CSV Upload (Streamlit UI)
 → Send inputs + prediction to Local Dockerized Ollama (gemma4:e2b)
 → Generate Manager + Employee Insights + Visualization
 → Store everything in Supabase
+
+
+**Deployed Layer**:
+- **FastAPI** (on Railway) – Standalone prediction endpoint.
+- **Streamlit Dashboard** (on Railway) – Read-only from Supabase.
+
+**Technology Stack**:
+- **Model**: scikit-learn RandomForestRegressor
+- **API**: FastAPI + Pydantic (deployed on **Railway**)
+- **LLM**: Ollama in Docker with `gemma4:e2b`
+- **Database**: **Supabase** (Free Hobby tier)
+- **UI + Dashboard**: Streamlit
+- **Deployment**: Railway (for both FastAPI and Streamlit Dashboard)
+
+## 4. Functional Requirements
+
+### 4.1 Model Training
+- Use **Random Forest Regressor**.
+- 80% train / 20% test split.
+- 5-fold cross-validation for validation.
+- Save model using `joblib`.
+- **Final Model Performance on Test Set**:
+  - Test MAE: **$27,687**
+  - Test RMSE: **$39,819**
+  - Test R²: **0.5863**
+
+### 4.2 FastAPI Endpoint (Deployed on Railway)
+- Endpoint: `POST /predict` (supports single record or batch).
+- Strong input validation using Pydantic.
+- Return predicted `salary_in_usd`.
+
+### 4.3 Streamlit Front-End UI (CSV Uploader)
+- Responsive and clean UI.
+- File uploader for CSV containing new/synthetic data (**minimum 50 records**).
+- Button: **"Predict & Analyze"**.
+
+**CRITICAL REQUIREMENTS – CSV VALIDATION & ERROR HANDLING**:
+
+> **⚠️ VERY IMPORTANT NOTES (Strict Rules – Non-Negotiable)**
+
+> 1. **CSV Validation Must Be Extremely Strict**
+>    - The uploaded CSV **must contain all required columns** exactly as used in model training.
+>    - **No missing values (NaN or empty cells)** are allowed in any row or column.
+>    - All categorical values must match the exact categories present in the training data (case-sensitive).
+>    - If any row contains missing values or invalid data, the **entire upload must be rejected** with a clear, user-friendly error message.
+>    - Implement comprehensive validation before any prediction calls are made.
+
+> 2. **Error Handling Must Be Robust and Comprehensive**
+>    - **No unhandled exceptions** anywhere in the application.
+>    - Every API call, Ollama interaction, Supabase operation, and file processing must be wrapped in proper try/except blocks.
+>    - Provide clear feedback to the user in the Streamlit UI for any failure.
+>    - The application must never crash or show raw Python tracebacks to the user.
+
+> 3. **Batch Processing Safety**
+>    - Process records safely with progress bar.
+>    - Continue processing on individual record failures and clearly report successes/failures.
+
+### 4.4 LLM Analysis (Local Dockerized Ollama – gemma4:e2b)
+- Use `gemma4:e2b` model.
+- Prompt must generate:
+  - **Manager Insights**: Actionable advice on reducing salary costs.
+  - **Employee Insights**: Actionable advice on increasing salary.
+  - At least **one relevant visualization** (chart).
+
+### 4.5 Supabase Schema
+Recommended table (`salary_predictions`):
+
+```sql
+id                  uuid primary key default uuid_generate_v4()
+work_year           int
+experience_level    text
+employment_type     text
+job_title           text
+company_size        text
+remote_ratio        int
+predicted_salary    numeric
+manager_insights    text
+employee_insights   text
+visualization_url   text
+created_at          timestamp default now()
