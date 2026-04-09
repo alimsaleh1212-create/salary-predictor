@@ -1,1 +1,0 @@
-"""Salary prediction generation package."""

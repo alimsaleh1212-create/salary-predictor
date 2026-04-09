@@ -1,1 +1,0 @@
-"""Salary Prediction API package."""

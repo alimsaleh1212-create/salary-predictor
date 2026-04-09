@@ -1,0 +1,182 @@
+Dataset Analysis
+From examining the ds_salaries.csv file, I can see:
+1. Shape: 607 rows (including header), multiple columns
+2. Columns:
+   - work_year (int): Year of the salary data
+   - experience_level (categorical): EN, MI, SE, EX
+   - employment_type (categorical): FT, PT, CT, FL
+   - job_title (string): Various data science roles
+   - salary (float): Salary in local currency
+   - salary_currency (categorical): USD, EUR, GBP, etc.
+   - salary_in_usd (float): Target variable - salary converted to USD
+   - employee_residence (string): Country code
+   - remote_ratio (int): Percentage of remote work (0, 50, 100)
+   - company_location (string): Country code
+   - company_size (categorical): S, M, L
+Data Cleaning Plan
+1. Initial Data Assessment
+- Load data and check basic info (shape, dtypes, memory usage)
+- Identify missing values in each column
+- Check for duplicate rows
+- Examine unique values in categorical columns
+2. Handle Missing Values
+Based on visual inspection, the data appears clean, but I'll verify:
+- Check for nulls in all columns
+- If any missing values exist:
+  - For numerical columns: Consider median imputation or removal if minimal
+  - For categorical columns: Mode imputation or create "Unknown" category
+  - For job_title: May need special handling if missing
+3. Data Type Optimization
+- Convert appropriate columns to categorical dtype for memory efficiency:
+  - experience_level, employment_type, salary_currency, employee_residence, 
+  - company_location, company_size
+- Ensure work_year is integer
+- Ensure remote_ratio is integer
+- Ensure salary and salary_in_usd are float
+4. Feature Engineering Considerations
+- Consider creating experience_level ordinal encoding (EN=1, MI=2, SE=3, EX=4)
+- Consider grouping rare job titles into broader categories
+- Consider creating region-based features from employee_residence/company_location
+- Consider creating size categories for companies
+5. Outlier Detection
+- Check salary_in_usd for extreme values using IQR or Z-score methods
+- Determine if outliers are legitimate (e.g., extremely high salaries for EX level) or errors
+- Decide whether to cap, transform, or keep outliers based on business context
+6. Target Variable Verification
+- Confirm salary_in_usd is correctly calculated (should match salary when salary_currency=USD)
+- Check for inconsistencies in currency conversion
+Exploratory Data Analysis (EDA) Plan
+1. Univariate Analysis
+- Target Variable (salary_in_usd):
+  - Distribution (histogram, KDE plot)
+  - Summary statistics (mean, median, std, min, max, percentiles)
+  - Skewness and kurtosis
+  
+- Categorical Variables:
+  - Frequency counts for experience_level, employment_type, company_size
+  - Top job titles
+  - Geographic distributions (employee_residence, company_location)
+2. Bivariate Analysis
+- Salary vs Experience Level: Box plots or violin plots
+- Salary vs Employment Type: Comparison of distributions
+- Salary vs Company Size: Salary distributions across S/M/L
+- Salary vs Remote Ratio: Does remote work affect salary?
+- Salary vs Work Year: Trends over time
+3. Multivariate Analysis
+- Correlation heatmap for numerical variables
+- Salary patterns by experience level and company size
+- Geographic salary comparisons (top countries)
+- Job title salary ranges
+4. Specific Investigations for ML Pipeline
+- Check if preprocessing needs to handle rare categories
+- Determine appropriate encoding strategies for categorical variables
+- Assess if feature interactions are important (e.g., experience_level * company_size)
+- Evaluate if any variables should be excluded from modeling (like the index column)
+Implementation Notes for src/preprocessing.py
+Based on the EDA, the preprocessing should include:
+1. Categorical Encoding:
+   - Ordinal encoding for experience_level (EN < MI < SE < EX)
+   - One-hot or label encoding for employment_type, company_size
+   - Consider target encoding or frequency encoding for high-cardinality columns like job_title, employee_residence, company_location
+2. Feature Selection:
+   - Keep: work_year, experience_level, employment_type, job_title, salary_currency, employee_residence, remote_ratio, company_location, company_size
+   - Exclude: salary (redundant with salary_in_usd when currency=USD), the index column
+3. Target Variable: salary_in_usd
+4. Pipeline Steps:
+   - Handle missing values
+   - Encode categorical variables
+   - Scale numerical features if needed (though Decision Trees don't require scaling)
+   - Return features (X) and target (y)
+This plan provides a solid foundation for Stage 1 of the project. Once approved, I can proceed with implementing the data cleaning and EDA in the notebooks/ directory.
+Data Cleaning and EDA Plan for Salary Prediction Project
+Dataset Overview
+The ds_salaries.csv contains 607 records of data science job salaries with the following columns:
+- work_year: Year of salary data (2020-2022)
+- experience_level: EN (Entry-level), MI (Mid-level), SE (Senior-level), EX (Executive)
+- employment_type: FT (Full-time), PT (Part-time), CT (Contract), FL (Freelance)
+- job_title: Specific job titles (100+ unique values)
+- salary: Salary in local currency
+- salary_currency: Currency of salary (USD, EUR, GBP, etc.)
+- salary_in_usd: Target variable - salary converted to USD
+- employee_residence: Employee's country of residence
+- remote_ratio: Percentage of remote work (0, 50, 100)
+- company_location: Company's country location
+- company_size: S (Small), M (Medium), L (Large)
+Data Cleaning Plan
+1. Initial Assessment
+- Load data and verify shape (607 rows × 12 columns)
+- Check data types: Convert categorical columns to category dtype for efficiency
+- Identify missing values (visual inspection suggests clean data, but will verify)
+- Check for duplicate rows
+2. Missing Value Treatment
+If any missing values found:
+- Numerical columns (salary, salary_in_usd): Median imputation or removal if <5%
+- Categorical columns: Mode imputation or "Unknown" category
+- Special handling for job_title if missing (may group as "Other")
+3. Data Validation
+- Verify salary_in_usd correctness: Should equal salary when salary_currency = 'USD'
+- Check for inconsistent currency conversions
+- Validate work_year range (2020-2022)
+- Confirm remote_ratio values are only 0, 50, 100
+- Ensure experience_level values are only EN, MI, SE, EX
+4. Feature Engineering Preparation
+- Create ordinal mapping for experience_level: EN=0, MI=1, SE=2, EX=3
+- Consider grouping rare job_title values (appearing <5 times) into "Other"
+- Consider creating geographic regions from country codes
+- Note: salary column may be redundant for modeling since we have salary_in_usd
+5. Outlier Analysis
+- Examine salary_in_usd distribution for extreme values
+- Use IQR method to identify outliers
+- Determine if outliers are legitimate (e.g., EX-level salaries) or data errors
+- Decide on treatment: keep, cap, or transform based on business context
+Exploratory Data Analysis Plan
+1. Univariate Analysis
+Target Variable (salary_in_usd):
+- Distribution visualization (histogram + KDE)
+- Summary statistics (mean, median, std, min, max, percentiles)
+- Skewness and kurtosis assessment
+Categorical Variables:
+- Frequency tables and bar plots for:
+  - experience_level
+  - employment_type 
+  - company_size
+  - Top 10 most frequent job_title values
+  - Top 10 employee_residence countries
+  - Top 10 company_location countries
+2. Bivariate Analysis
+- Salary vs Experience Level: Box plots showing salary distribution by level
+- Salary vs Employment Type: Comparison of salary distributions
+- Salary vs Company Size: Salary comparisons across S/M/L companies
+- Salary vs Remote Ratio: Impact of remote work on compensation
+- Salary vs Work Year: Trend analysis over 2020-2022 period
+- Geographic Analysis: Average salary by top countries (residence and location)
+3. Multivariate Analysis
+- Correlation matrix for numerical variables
+- Salary patterns by experience level and company size combinations
+- Interaction effects: Does company size affect salary differently by experience level?
+- Geographic salary comparisons adjusting for experience level
+4. ML-Specific Investigations
+- Assess cardinality of categorical features for encoding decisions:
+  - Low cardinality (<10): experience_level, employment_type, company_size, remote_ratio
+  - Medium cardinality (10-50): salary_currency 
+  - High cardinality (>50): job_title, employee_residence, company_location
+- Determine appropriate encoding strategies:
+  - Ordinal for experience_level
+  - One-hot or label encoding for low/medium cardinality
+  - Target or frequency encoding for high cardinality features
+- Evaluate feature importance concepts for Decision Trees
+Implementation Recommendations for src/preprocessing.py
+Based on this analysis, the preprocessing pipeline should:
+1. Handle the index column: Drop the first unnamed column
+2. Feature Selection: 
+   - Keep: work_year, experience_level, employment_type, job_title, salary_currency, employee_residence, remote_ratio, company_location, company_size
+   - Consider dropping: salary (redundant with salary_in_usd)
+   - Target: salary_in_usd
+3. Encoding Strategy:
+   - Ordinal encoding for experience_level (EN→0, MI→1, SE→2, EX→3)
+   - Label encoding for employment_type and company_size
+   - Frequency or target encoding for high-cardinality columns (job_title, employee_residence, company_location)
+   - One-hot encoding for salary_currency (low cardinality)
+4. Missing Value Strategy: Simple imputation with mode for categorical, median for numerical
+5. No Scaling Needed: Decision Trees don't require feature scaling
+This approach will create a clean, well-understood dataset ready for model training in Stage 2.
