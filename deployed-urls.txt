@@ -1,0 +1,2 @@
+FastApi url: https://salary-predictor-yh7z.onrender.com/
+Streamlit url: 
