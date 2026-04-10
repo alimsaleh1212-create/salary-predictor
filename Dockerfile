@@ -19,5 +19,5 @@ COPY models/ ./models/
 # Expose port (Railway overrides with $PORT at runtime)
 EXPOSE 8000
 
-# Shell form so $PORT is expanded by the shell at runtime
-CMD uv run uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}
+# Use venv directly — avoids uv run overhead and PATH issues on Railway
+CMD ["/bin/sh", "-c", "/app/.venv/bin/uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
