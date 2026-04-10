@@ -1,2 +1,5 @@
+local Streamlit upload and trigger url: http://localhost:8501
 FastApi url: https://salary-predictor-yh7z.onrender.com/
-Streamlit url: https://salary-predictor-dashboard.onrender.com/
+Streamlit dashboard url: https://salary-predictor-dashboard.onrender.com/
+
+uv run streamlit run streamlit_app/upload_ui.py --server.port 8501 --server.headless true
