@@ -1,5 +1,8 @@
+# start here, load Streamlit upload ui and predictor, analyze, add to supabase
 local Streamlit upload and trigger url: http://localhost:8501
+# FastApi urls
 FastApi url: https://salary-predictor-yh7z.onrender.com/
+# Streamlit dashboard
 Streamlit dashboard url: https://salary-predictor-dashboard.onrender.com/
 
 uv run streamlit run streamlit_app/upload_ui.py --server.port 8501 --server.headless true
