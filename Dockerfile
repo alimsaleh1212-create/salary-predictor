@@ -16,7 +16,8 @@ COPY api/ ./api/
 COPY src/ ./src/
 COPY models/ ./models/
 
-# Expose port
+# Expose port (Railway overrides with $PORT at runtime)
 EXPOSE 8000
 
-CMD ["uv", "run", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Shell form so $PORT is expanded by the shell at runtime
+CMD uv run uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}
