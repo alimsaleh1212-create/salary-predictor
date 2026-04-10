@@ -29,6 +29,10 @@ env/
 *.swo
 *~
 
+# demo files
+/demo_sample/
+/demo_samples/*
+
 # Jupyter
 .ipynb_checkpoints/
 
